@@ -3,6 +3,9 @@ using OpusInCSharp.Repository;
 using OpusInCSharp.Entities;
 using System.Collections.Generic;
 using System;
+using OpusInCSharp.Dtos;
+using System.Linq;
+
 namespace OpusInCSharp.Controllers
 {
     [ApiController]
@@ -17,9 +20,17 @@ namespace OpusInCSharp.Controllers
 
         // GET /books
         [HttpGet]
-        public IEnumerable<Book> GetBooks()
+        public IEnumerable<BookDto> GetBooks()
         {
-            var books = repository.GetBooks();
+            var books = repository.GetBooks().Select( book => new BookDto{
+                id = book.id,
+                title = book.title,
+                author = book.author,
+                publisher = book.publisher,
+                isbn = book.isbn,
+                isbn13 = book.isbn13,
+                description = book.description
+            });
             return books;
         }
 
