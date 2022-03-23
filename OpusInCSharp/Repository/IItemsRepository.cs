@@ -10,6 +10,8 @@ namespace OpusInCSharp.Repository
         Book GetBookByIsbn13(string isbn13);
         Book GetBookById(Guid id);
         IEnumerable<Book> GetBooks();
+
+        Book CreateBook(Book book);
     }
 
 

@@ -63,6 +63,13 @@ namespace OpusInCSharp.Repository
             return books.Where(book => book.id == id).SingleOrDefault();
         }
 
+
+        public Book CreateBook(Book book)
+        {
+            books.Add(book);
+            return book;
+        }
+
     }
 
 

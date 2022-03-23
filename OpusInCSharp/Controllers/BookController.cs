@@ -22,21 +22,13 @@ namespace OpusInCSharp.Controllers
         [HttpGet]
         public IEnumerable<BookDto> GetBooks()
         {
-            var books = repository.GetBooks().Select( book => new BookDto{
-                id = book.id,
-                title = book.title,
-                author = book.author,
-                publisher = book.publisher,
-                isbn = book.isbn,
-                isbn13 = book.isbn13,
-                description = book.description
-            });
+            var books = repository.GetBooks().Select( book => book.asDTO() );
             return books;
         }
 
         // GET /books/{isbn}
         [HttpGet("isbn/{isbn}")]
-        public ActionResult<Book> GetBookByIsbn(string isbn)
+        public ActionResult<BookDto> GetBookByIsbn(string isbn)
         {
             var book = repository.GetBookByIsbn(isbn);
 
@@ -44,12 +36,12 @@ namespace OpusInCSharp.Controllers
                 return NotFound();
             }
 
-            return book;
+            return book.asDTO();
         }
 
         // GET /books/{isbn13}
         [HttpGet("isbn13/{isbn13}")]
-        public ActionResult<Book> GetBookByIsbn13(string isbn13)
+        public ActionResult<BookDto> GetBookByIsbn13(string isbn13)
         {
             var book = repository.GetBookByIsbn13(isbn13);
 
@@ -57,12 +49,12 @@ namespace OpusInCSharp.Controllers
                 return NotFound();
             }
 
-            return book;
+            return book.asDTO();
         }
 
         // GET /books/{id}
         [HttpGet("id/{id}")]
-        public ActionResult<Book> GetBookById(Guid id)
+        public ActionResult<BookDto> GetBookById(Guid id)
         {
             var book = repository.GetBookById(id);
 
@@ -70,8 +62,31 @@ namespace OpusInCSharp.Controllers
                 return NotFound();
             }
 
-            return book;
+            return book.asDTO();
         }
+
+        // POST /book 
+        [HttpPost]
+        public ActionResult<BookDto> CreateBook(CreateBookDto bookDto)
+        {
+            Book book = new(){
+                id = Guid.NewGuid(),
+                title = bookDto.title,
+                author = bookDto.author,
+                isbn = bookDto.isbn,
+                isbn13 = bookDto.isbn13       
+            };
+
+            repository.CreateBook(book);
+
+            if(bookDto is null){
+                return NotFound();
+            }
+
+            return CreatedAtAction(nameof(GetBookById), new {id = book.id}, book.asDTO() );
+        }
+
+
 
 
 
